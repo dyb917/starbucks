@@ -120,7 +120,7 @@ public class Point {
 }
 ```
 
-**Point 서비스의 PolicyHandler.java **
+**Point 서비스의 PolicyHandler.java**
 
 
  
