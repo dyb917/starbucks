@@ -1,0 +1,11 @@
+winterschoolone\Payed.class
+winterschoolone\PointApplication.class
+winterschoolone\PointController.class
+winterschoolone\AbstractEvent$1.class
+winterschoolone\Point.class
+winterschoolone\PointRepository.class
+winterschoolone\PolicyHandler.class
+winterschoolone\PointCancelled.class
+winterschoolone\config\kafka\KafkaProcessor.class
+winterschoolone\PointSaved.class
+winterschoolone\AbstractEvent.class
