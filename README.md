@@ -309,13 +309,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Date;
 
-@FeignClient(name="Point", url="api.url.Payment")
+@FeignClient(name="Point", url="api.url.Point")
 public interface PointService {
 
     @RequestMapping(method= RequestMethod.POST, path="/points")
     public void point(@RequestBody Point point);
 
 }
+
 ```
 
 **동작 확인**
@@ -339,7 +340,7 @@ git clone https://github.com/dyb917/starbucks.git
 ```
 - Build 하기
 ```
-cd /winterone
+cd /starbucks
 cd gateway
 mvn package
 
@@ -358,6 +359,11 @@ mvn package
 cd ..
 cd sirenorderhome
 mvn package
+
+cd ..
+cd Point
+mvn package
+
 ```
 
 - Docker Image Push/deploy/서비스생성
@@ -413,7 +419,7 @@ kubectl expose deploy point --type=ClusterIP --port=8080 -n tutorial
 ![image](https://user-images.githubusercontent.com/74236548/108037373-dfec6800-707c-11eb-90e2-6a636ec4087d.png)
 
 
-- winterone/SirenOrder/kubernetes/deployment.yml 파일 
+- winterone/Point/kubernetes/deployment.yml 파일 
 ```yml
 apiVersion: apps/v1
 kind: Deployment
@@ -516,7 +522,7 @@ kubectl expose deploy point --type=ClusterIP --port=8080 -n tutorial
 ```
 kubectl autoscale deploy point --min=1 --max=10 --cpu-percent=15 -n tutorial
 ```
-- siege를 활용해서 워크로드를 2분간 걸어준다. (Cloud 내 siege pod에서 부하줄 것)
+- siege를 활용해서 워크로드를 1분간 걸어준다. (Cloud 내 siege pod에서 부하줄 것)
 ```
 kubectl exec -it pod/siege -c siege -n tutorial -- /bin/bash
 siege -c100 -t60S -r10 -v --content-type "application/json" 'http://10.0.180.165:8080/payments POST {"userId": "user10", "menuId": "menu10", "qty":10, "orderId":1}'
@@ -554,17 +560,19 @@ hystrix:
 - starbucks/Point/src/main/java/winterschoolone/Point.java
 
 ``` java
-    @PostPersist
-    public void onPostPersist(){
-        Payed payed = new Payed();
-        BeanUtils.copyProperties(this, payed);
-        payed.publishAfterCommit();
-        
+
+    @PrePersist
+    public void onPrePersist(){
+        PointSaved pointSaved = new PointSaved();
+        BeanUtils.copyProperties(this, pointSaved);
+        pointSaved.publishAfterCommit();
+
         try {
                 Thread.currentThread().sleep((long) (400 + Math.random() * 220));
         } catch (InterruptedException e) {
                 e.printStackTrace();
         }
+ 
     }
 ```
 
@@ -587,10 +595,10 @@ siege -c100 -t60S -r10 -v --content-type "application/json" 'http://10.0.180.165
 - 무정지 배포가 되지 않는 readiness 옵션을 제거 설정
 winterone/Point/kubernetes/deployment_n_readiness.yml
 ```yml
-    spec:
+        spec:
       containers:
-        - name: shop
-          image: hispres.azurecr.io/shop:v1
+        - name: point
+          image: skuser08.azurecr.io/point:v1
           ports:
             - containerPort: 8080
 #          readinessProbe:
@@ -616,12 +624,12 @@ winterone/Point/kubernetes/deployment_n_readiness.yml
 ![무정지배포(readiness 제외) 실행결과](https://user-images.githubusercontent.com/77368578/108004276-c295aa80-7038-11eb-9618-1c85fe0a2f53.png)
 
 - 무정지 배포를 위한 readiness 옵션 설정
-winterone/Shop/kubernetes/deployment.yml
+winterone/Point/kubernetes/deployment.yml
 ```yml
-    spec:
+        spec:
       containers:
-        - name: shop
-          image: hispres.azurecr.io/shop:v1
+        - name: point
+          image: skuser08.azurecr.io/point:v1
           ports:
             - containerPort: 8080
           readinessProbe:
@@ -650,8 +658,14 @@ winterone/Shop/kubernetes/deployment.yml
 # Self-healing (Liveness Probe)
 
 - Self-healing 확인을 위한 Liveness Probe 옵션 변경
-winterone/Shop/kubernetes/deployment_live.yml
+winterone/Point/kubernetes/deployment_live.yml
 ```yml
+    spec:
+      containers:
+        - name: point
+          image: skuser08.azurecr.io/point:v1
+          ports:
+            - containerPort: 8080
           readinessProbe:
             httpGet:
               path: '/actuator/health'
