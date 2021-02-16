@@ -49,8 +49,7 @@ msaez.io 를 통해 구현한 Aggregate 단위로 Entity 를 선언 후, 구현�
 
 Entity Pattern 과 Repository Pattern 을 적용하기 위해 Spring Data REST 의 RestRepository 를 적용하였다.
 
-**Point 서비스의 Point.java **
-
+**Point 서비스의 Point.java**
 
 ```java 
 package winterschoolone;
