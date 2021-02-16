@@ -620,10 +620,8 @@ winterone/Point/kubernetes/deployment_n_readiness.yml
 ```
 - 무정지 배포가 되지 않아 Siege 결과 Availability가 100%가 되지 않음
 
-![무정지배포(readiness 제외) 실행](https://user-images.githubusercontent.com/77368578/108004272-c0cbe700-7038-11eb-94c4-22a0785a7ebc.png)
-![무정지배포(readiness 제외) 실행결과](https://user-images.githubusercontent.com/77368578/108004276-c295aa80-7038-11eb-9618-1c85fe0a2f53.png)
-
 ![image](https://user-images.githubusercontent.com/74236548/108084965-2ad7a100-70b8-11eb-9427-ec3b828cdad1.png)
+![무정지배포(readiness 제외) 실행결과](https://user-images.githubusercontent.com/77368578/108004276-c295aa80-7038-11eb-9618-1c85fe0a2f53.png)
 
 - 무정지 배포를 위한 readiness 옵션 설정
 winterone/Point/kubernetes/deployment.yml
