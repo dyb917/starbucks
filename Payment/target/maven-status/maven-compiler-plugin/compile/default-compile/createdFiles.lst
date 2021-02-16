@@ -1,0 +1,13 @@
+winterschoolone\Payed.class
+winterschoolone\PaymentApplication.class
+winterschoolone\PaymentRepository.class
+winterschoolone\AbstractEvent$1.class
+winterschoolone\PaymentController.class
+winterschoolone\OrderCancelled.class
+winterschoolone\PolicyHandler.class
+winterschoolone\external\Point.class
+winterschoolone\config\kafka\KafkaProcessor.class
+winterschoolone\external\PointService.class
+winterschoolone\Payment.class
+winterschoolone\Refunded.class
+winterschoolone\AbstractEvent.class
