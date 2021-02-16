@@ -621,7 +621,7 @@ winterone/Point/kubernetes/deployment_n_readiness.yml
 - 무정지 배포가 되지 않아 Siege 결과 Availability가 100%가 되지 않음
 
 ![image](https://user-images.githubusercontent.com/74236548/108084965-2ad7a100-70b8-11eb-9427-ec3b828cdad1.png)
-![무정지배포(readiness 제외) 실행결과](https://user-images.githubusercontent.com/77368578/108004276-c295aa80-7038-11eb-9618-1c85fe0a2f53.png)
+![image](https://user-images.githubusercontent.com/74236548/108086335-979f6b00-70b9-11eb-8ca1-5d9170911a5c.png)
 
 - 무정지 배포를 위한 readiness 옵션 설정
 winterone/Point/kubernetes/deployment.yml
@@ -690,4 +690,3 @@ winterone/Point/kubernetes/deployment_live.yml
 - Point pod에서 적용 시 retry발생 확인
 
 ![image](https://user-images.githubusercontent.com/74236548/108081733-a0417280-70b4-11eb-8c3b-dfdf2ca85478.png)
-
