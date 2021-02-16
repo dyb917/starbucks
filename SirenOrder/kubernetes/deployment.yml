@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sirenorder
+  namespace: tutorial
+  labels:
+    app: sirenorder
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sirenorder
+  template:
+    metadata:
+      labels:
+        app: sirenorder
+    spec:
+      containers:
+        - name: sirenorder
+          image: hispres.azurecr.io/sirenorder:v4
+          ports:
+            - containerPort: 8080
+          env:
+            - name: configurl
+              valueFrom:
+                configMapKeyRef:
+                  name: apiurl
+                  key: url
