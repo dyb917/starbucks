@@ -49,7 +49,8 @@ msaez.io 를 통해 구현한 Aggregate 단위로 Entity 를 선언 후, 구현�
 
 Entity Pattern 과 Repository Pattern 을 적용하기 위해 Spring Data REST 의 RestRepository 를 적용하였다.
 
-**Point 서비스의 Point.java**
+**Point 서비스의 Point.java **
+
 
 ```java 
 package winterschoolone;
@@ -120,10 +121,8 @@ public class Point {
 }
 ```
 
-**Point 서비스의 PolicyHandler.java**
+**Point 서비스의 PolicyHandler.java **
 
-
- 
 ```java
 package winterschoolone;
 
@@ -683,11 +682,11 @@ winterone/Point/kubernetes/deployment_live.yml
             periodSeconds: 5
 ```
 
-- Shop pod에 Liveness Probe 옵션 적용 확인
+- Point pod에 Liveness Probe 옵션 적용 확인
 
-![self-healing설정 결과](https://user-images.githubusercontent.com/77368578/108004513-697a4680-7039-11eb-917a-1e100ddd2ccd.png)
+![image](https://user-images.githubusercontent.com/74236548/108081227-0da0d380-70b4-11eb-9b41-f6d838ab13e5.png)
 
-- Shop pod에서 적용 시 retry발생 확인
+- Point pod에서 적용 시 retry발생 확인
 
-![self-healing설정 후 restart증적](https://user-images.githubusercontent.com/77368578/108004507-6717ec80-7039-11eb-809f-67316db013c6.png)
+![image](https://user-images.githubusercontent.com/74236548/108081733-a0417280-70b4-11eb-8c3b-dfdf2ca85478.png)
 
