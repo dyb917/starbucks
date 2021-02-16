@@ -298,7 +298,7 @@ Shop 서비스의 DB와 SirenOrder의 DB를 다른 DB를 사용하여 폴리글�
 
 분석단계에서의 조건 중 하나로 주문(SirenOrder)->결제(pay) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 호출 프로토콜은 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다.
 
-**Payment 서비스 내 external.PointService **
+**Payment 서비스 내 external.PointService**
 ```java
 package winterschoolone.external;
 
@@ -684,7 +684,8 @@ winterone/Point/kubernetes/deployment_live.yml
 
 - Point pod에 Liveness Probe 옵션 적용 확인
 
-![image](https://user-images.githubusercontent.com/74236548/108081227-0da0d380-70b4-11eb-9b41-f6d838ab13e5.png)
+![image](https://user-images.githubusercontent.com/74236548/108082964-f06d0480-70b5-11eb-83cc-49f4db6a1bde.png)
+
 
 - Point pod에서 적용 시 retry발생 확인
 
