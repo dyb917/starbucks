@@ -148,13 +148,13 @@ public class PolicyHandler{
     public void wheneverPayed_(@Payload Payed payed){
 
         if(payed.isMe()){
-            System.out.println("##### listener_wheneverPayed_Point  : " + payed.toJson());
             
             Point point = new Point();
             point.setOrderId(payed.getOrderId());
             point.setUserId(payed.getUserId());
             point.setPoint(payed.getQty()*10);
-            
+            // view 객체에 이벤트의 eventDirectValue 를 set 함
+            // view 레파지 토리에 save
             pointRepository.save(point);
         }
     }
@@ -270,11 +270,10 @@ Materialized View 를 구현하여, 타 마이크로서비스의 데이터 원�
 
 ![image](https://user-images.githubusercontent.com/74236548/108023409-cc81d280-7065-11eb-90c1-141c7178ecc5.png)
 
-또한 Correlation을 key를 활용하여 orderId를 Key값을 하고 원하는 주문하고 서비스간의 공유가 이루어 졌다.
 
 위와 같이 주문을 하게되면 SirenOrder -> Payment -> Point 적립 되고
 
-주문 취소가 되면 Point가 0으로 Update 되는 것을 볼 수 있다.
+주문 취소(결제 취소)가 되면 Point가 0으로 Update 되는 것을 볼 수 있다.
 
 또한 Correlation을 key를 활용하여 orderId를 Key값을 하고 원하는 주문하고 서비스간의 공유가 이루어 졌다.
 
@@ -282,7 +281,7 @@ Materialized View 를 구현하여, 타 마이크로서비스의 데이터 원�
 
 # 폴리글랏
 
-Shop 서비스의 DB와 SirenOrder의 DB를 다른 DB를 사용하여 폴리글랏을 만족시키고 있다.
+Shop 서비스의 DB와 Point DB를 다른 DB를 사용하여 폴리글랏을 만족시키고 있다.
 
 
 **Shop의 pom.xml DB 설정 코드**
@@ -296,7 +295,7 @@ Shop 서비스의 DB와 SirenOrder의 DB를 다른 DB를 사용하여 폴리글�
 
 # 동기식 호출 과 Fallback 처리
 
-분석단계에서의 조건 중 하나로 주문(SirenOrder)->결제(pay) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 호출 프로토콜은 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다.
+분석단계에서의 조건 중 하나로 결제취소(Payment)->포인트취소(Point) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 호출 프로토콜은 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다.
 
 **Payment 서비스 내 external.PointService**
 ```java
@@ -440,7 +439,7 @@ spec:
     spec:
       containers:
         - name: point
-          image: hispres.azurecr.io/point:v1
+          image: skuser08.azurecr.io/point:v1
           ports:
             - containerPort: 8080
           env:
@@ -488,7 +487,27 @@ spec:
 
 - Deployment.yml 에 ConfigMap 적용
 
-![image](https://user-images.githubusercontent.com/74236548/107925407-c2a19600-6fb7-11eb-9325-6bd2cd94455c.png)
+```yaml
+
+      app: point
+  template:
+    metadata:
+      labels:
+        app: point
+    spec:
+      containers:
+        - name: point
+          image: skuser08.azurecr.io/point:v1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: configurl
+              valueFrom:
+                configMapKeyRef:
+                  name: apiurl
+                  key: url
+				  
+```
 
 - ConfigMap 생성
 
@@ -690,3 +709,7 @@ winterone/Point/kubernetes/deployment_live.yml
 - Point pod에서 적용 시 retry발생 확인
 
 ![image](https://user-images.githubusercontent.com/74236548/108081733-a0417280-70b4-11eb-8c3b-dfdf2ca85478.png)
+
+
+
+
