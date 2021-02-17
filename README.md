@@ -369,31 +369,31 @@ mvn package
 ```
 kubectl create ns tutorial
 
-cd gateway
+cd Gateway
 az acr build --registry skuser08 --image skuser08.azurecr.io/gateway:v1 .
 kubectl create deploy gateway --image=skuser08.azurecr.io/gateway:v1 -n tutorial
 kubectl expose deploy gateway --type=ClusterIP --port=8080 -n tutorial
 
 cd ..
-cd payment
+cd Payment
 az acr build --registry skuser08 --image skuser08.azurecr.io/payment:v1 .
 kubectl create deploy payment --image=skuser08.azurecr.io/payment:v1 -n tutorial
 kubectl expose deploy payment --type=ClusterIP --port=8080 -n tutorial
 
 cd ..
-cd shop
+cd Shop
 az acr build --registry skuser08 --image skuser08.azurecr.io/sirenorderhome:v1 .
 kubectl create deploy shop --image=skuser08.azurecr.io/sirenorderhome:v1 -n tutorial
 kubectl expose deploy shop --type=ClusterIP --port=8080 -n tutorial
 
 cd ..
-cd sirenorderhome
+cd Sirenorderhome
 az acr build --registry skuser08 --image skuser08.azurecr.io/sirenorderhome:v1 .
 kubectl create deploy sirenorderhome --image=skuser08.azurecr.io/sirenorderhome:v1 -n tutorial
 kubectl expose deploy sirenorderhome --type=ClusterIP --port=8080 -n tutorial
 
 cd ..
-cd sirenorder
+cd Sirenorder
 az acr build --registry skuser08 --image skuser08.azurecr.io/sirenorder:v1 .
 kubectl create deploy sirenorder --image=skuser08.azurecr.io/sirenorder:v1 -n tutorial
 kubectl expose deploy sirenorder --type=ClusterIP --port=8080 -n tutorial
@@ -505,7 +505,8 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: apiurl
-                  key: url			  
+                  key: url
+				  
 ```
 
 - ConfigMap 생성
@@ -562,8 +563,8 @@ kubectl get all -n tutorial
 - Hystrix를 설정 : 요청처리 쓰레드에서 처리시간이 610 밀리가 넘어서기 시작하여 어느정도
   유지되면 CB 회로가 닫히도록(요청을 빠르게 실패처리, 차단) 설정
 
-- 동기 호출 주체인 Payment에서 Hystrix 설정 
-- Payment/src/main/resources/application.yml 파일
+- 동기 호출 주체인 SirenOrder에서 Hystrix 설정 
+- SirenOrder/src/main/resources/application.yml 파일
 ```yaml
 feign:
   hystrix:
@@ -575,7 +576,7 @@ hystrix:
 ```
 
 - 부하에 대한 지연시간 발생코드
-- starbucks/Point/src/main/java/winterschoolone/Point.java
+- winterone/SirenOrder/src/main/java/winterschoolone/external/PaymentService.java
 
 ``` java
 
@@ -600,8 +601,6 @@ hystrix:
 ```
 siege -c100 -t60S -r10 -v --content-type "application/json" 'http://10.0.14.180:8080/sirenOrders 
 POST {"userId": "user10", "menuId": "menu10", "qty":10}'
-
-siege -c100 -t60S -r10 -v --content-type "application/json" 'http://10.0.180.165:8080/payments POST {"userId": "user10", "menuId": "menu10", "qty":10, "orderId":1}'
 
 ```
 - 부하 발생하여 CB가 발동하여 요청 실패처리하였고, 밀린 부하가 다시 처리되면서 SirenOrders를 받기 시작
@@ -708,7 +707,5 @@ winterone/Point/kubernetes/deployment_live.yml
 - Point pod에서 적용 시 retry발생 확인
 
 ![image](https://user-images.githubusercontent.com/74236548/108081733-a0417280-70b4-11eb-8c3b-dfdf2ca85478.png)
-
-
 
 
