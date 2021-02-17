@@ -505,8 +505,7 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: apiurl
-                  key: url
-				  
+                  key: url				  
 ```
 
 - ConfigMap 생성
