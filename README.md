@@ -8,7 +8,7 @@
     1. 결제 취소 시 포인트 적립도 취소되어야 한다. (Sync)
 1. 장애격리
     1. 포인트 적립 서비스에 문제가 있어도 결제는 정상적으로 이루어져야 한다. (Async, Eventual Consistency)
-	1. 결제시스템이 과중되면 사용자를 잠시동안 받지 않고 결제를 잠시 후에 하도록 유도한다. (Circuit breaker, fallback)
+	1. 주문량이 많아 결재시스템 과중되면 잠시 주문을 받지 않고 잠시후에 하도록 유도한다 (Circuit breaker, fallback)
 1. 성능
     1. 포인트 적립 내역은 SirenOrderHome에서 언제든지 조회할 수 있다. (CQRS)
 
